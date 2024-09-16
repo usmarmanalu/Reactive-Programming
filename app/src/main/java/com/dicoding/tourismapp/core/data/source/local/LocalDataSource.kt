@@ -1,25 +1,16 @@
 package com.dicoding.tourismapp.core.data.source.local
 
-import com.dicoding.tourismapp.core.data.source.local.entity.TourismEntity
-import com.dicoding.tourismapp.core.data.source.local.room.TourismDao
-import io.reactivex.Flowable
+import com.dicoding.tourismapp.core.data.source.local.entity.*
+import com.dicoding.tourismapp.core.data.source.local.room.*
+import kotlinx.coroutines.flow.*
 
-class LocalDataSource private constructor(private val tourismDao: TourismDao) {
+class LocalDataSource(private val tourismDao: TourismDao) {
 
-    companion object {
-        private var instance: LocalDataSource? = null
+    fun getAllTourism(): Flow<List<TourismEntity>> = tourismDao.getAllTourism()
 
-        fun getInstance(tourismDao: TourismDao): LocalDataSource =
-            instance ?: synchronized(this) {
-                instance ?: LocalDataSource(tourismDao)
-            }
-    }
+    fun getFavoriteTourism(): Flow<List<TourismEntity>> = tourismDao.getFavoriteTourism()
 
-    fun getAllTourism(): Flowable<List<TourismEntity>> = tourismDao.getAllTourism()
-
-    fun getFavoriteTourism(): Flowable<List<TourismEntity>> = tourismDao.getFavoriteTourism()
-
-    fun insertTourism(tourismList: List<TourismEntity>) =
+    suspend fun insertTourism(tourismList: List<TourismEntity>) =
         tourismDao.insertTourism(tourismList)
 
     fun setFavoriteTourism(tourism: TourismEntity, newState: Boolean) {
